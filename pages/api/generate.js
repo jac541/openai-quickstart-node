@@ -5,6 +5,8 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+// var promptType = "romantic";
+
 export default async function (req, res) {
   if (!configuration.apiKey) {
     res.status(500).json({
@@ -15,21 +17,33 @@ export default async function (req, res) {
     return;
   }
 
-  const animal = req.body.animal || '';
-  if (animal.trim().length === 0) {
+  const msg = req.body.msg || '';
+  if (msg.trim().length === 0) {
     res.status(400).json({
       error: {
-        message: "Please enter a valid animal",
+        message: "Please enter a valid message",
       }
     });
     return;
   }
 
+//   switch(expression) {
+//   case x:
+//     // code block
+//     break;
+//   case y:
+//     // code block
+//     break;
+//   default:
+//     // code block
+// }
+
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: generatePrompt(animal),
-      temperature: 0.6,
+      prompt: generatePrompt(msg),
+      max_tokens: 1000,
+      temperature: 1.0,
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
@@ -48,15 +62,28 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(animal) {
-  const capitalizedAnimal =
-    animal[0].toUpperCase() + animal.slice(1).toLowerCase();
-  return `Suggest three names for an animal that is a superhero.
 
-Animal: Cat
-Names: Captain Sharpclaw, Agent Fluffball, The Incredible Feline
-Animal: Dog
-Names: Ruff the Protector, Wonder Canine, Sir Barks-a-Lot
-Animal: ${capitalizedAnimal}
-Names:`;
+
+function generatePrompt(msg) {
+  
+  return `A friend has sent me the following text message:
+
+  "${msg}"
+  
+  Suggest 4 replies for the message:`;
 }
+
+function generateImprovedPrompt(msg) {
+  
+  return `I'm texting a person who i am romantically interested in. The person sent the following message:
+
+  "I like movies :)"
+  
+  I intend to respond with the following message:
+  
+  "${msg}"
+  
+  Improve my response.`;
+}
+
+
