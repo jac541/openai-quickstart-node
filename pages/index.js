@@ -1,60 +1,14 @@
 import Head from "next/head";
-import { useState } from "react";
 import styles from "./index.module.css";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function Home() {
-  const [msgInput, setMsgInput] = useState("");
-  const [result, setResult] = useState();
-  const [lastInput, setLastInput] = useState("");
 
-  async function onSubmit(event) {
-    event.preventDefault();
-    try {
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ msg: msgInput }),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
-
-      setResult(data.result);
-      setMsgInput("");
-    } catch(error) {
-      // Consider implementing your own error handling logic here
-      console.error(error);
-      alert(error.message);
-    }
-  }
 
   return (
-    <div>
-      <Head>
-        <title>OpenAI Quickstart</title>
-        <link rel="icon" href="/dog.png" />
-      </Head>
-
-      <main className={styles.main}>
-        <img src="/dog.png" className={styles.icon} />
-        <h3>Reply to this text:</h3>
-        <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="msg"
-            placeholder="Enter a message"
-            value={msgInput}
-            onChange={(e) => {setMsgInput(e.target.value); setLastInput(e.target.value)} }
-          />
-          <input type="submit" value="Generate replies" />
-        </form>
-        <div className={styles.result}>Input: {lastInput}</div>
-        <div className={styles.result}>Output: {result}</div>
-      </main>
-    </div>
+    <BrowserRouter>
+      
+    </BrowserRouter>
   );
 }
